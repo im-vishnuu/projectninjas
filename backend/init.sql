@@ -1,0 +1,32 @@
+CREATE TABLE "Users" (
+  "userId" SERIAL PRIMARY KEY,
+  "email" VARCHAR(255) UNIQUE NOT NULL,
+  "passwordHash" VARCHAR(255) NOT NULL,
+  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "Projects" (
+  "projectId" SERIAL PRIMARY KEY,
+  "title" VARCHAR(255) NOT NULL,
+  "abstract" TEXT NOT NULL,
+  "keywords" TEXT[],
+  "ownerId" INTEGER NOT NULL REFERENCES "Users"("userId") ON DELETE CASCADE,
+  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "ProjectFiles" (
+  "fileId" SERIAL PRIMARY KEY,
+  "fileName" VARCHAR(255) NOT NULL,
+  "filePath" VARCHAR(255) NOT NULL,
+  "fileType" VARCHAR(50) NOT NULL DEFAULT 'Other', -- Added this line
+  "uploadDate" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "projectId" INTEGER NOT NULL REFERENCES "Projects"("projectId") ON DELETE CASCADE
+);
+
+CREATE TABLE "AccessRequests" (
+  "requestId" SERIAL PRIMARY KEY,
+  "status" VARCHAR(50) NOT NULL DEFAULT 'pending', -- pending, approved, denied
+  "requesterId" INTEGER NOT NULL REFERENCES "Users"("userId") ON DELETE CASCADE,
+  "projectId" INTEGER NOT NULL REFERENCES "Projects"("projectId") ON DELETE CASCADE,
+  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
