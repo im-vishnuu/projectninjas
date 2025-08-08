@@ -5,9 +5,11 @@ import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { useProjects } from '../hooks/useProjects';
 import { SkeletonLoader } from '../components/ui/SkeletonLoader';
+import { useAuth } from '../contexts/AuthContext';
 
 export const HomePage: React.FC = () => {
   const { projects, loading } = useProjects();
+  const { isAuthenticated } = useAuth();
   const featuredProjects = projects.slice(0, 3);
 
   return (
@@ -33,7 +35,7 @@ export const HomePage: React.FC = () => {
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link to="/register">
+              <Link to={isAuthenticated ? "/dashboard" : "/register"}>
                 <Button variant="outline" size="lg">
                   Add Your Project
                 </Button>

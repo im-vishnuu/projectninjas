@@ -8,10 +8,16 @@ import { useProjects, useAccessRequests } from '../hooks/useProjects';
 import { Link } from 'react-router-dom';
 import { Spinner } from '../components/ui/Spinner';
 import { useLocation } from 'react-router-dom';
+import { Trash2 } from 'lucide-react'; // 1. Import the delete icon
+import axios from 'axios'
+
+// Define your API base URL here or import it from your config
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 
 export const DashboardPage: React.FC = () => {
-  const { user } = useAuth();
-  const { projects, createProject, loading: projectsLoading } = useProjects();
+  const { user ,token} = useAuth();
+  const { projects,setProjects, createProject, loading: projectsLoading } = useProjects();
   // FIX: Use the new 'receivedRequests' state variable. Renaming for clarity.
   const { receivedRequests: requests, updateRequestStatus, fetchMyProjectsRequests } = useAccessRequests();
   const location = useLocation();
@@ -32,6 +38,7 @@ export const DashboardPage: React.FC = () => {
   }, [fetchMyProjectsRequests]);
 
 
+
   const userProjects = projects.filter(p => p.ownerId === user?.userId);
 
   const handleCreateProject = async (e: React.FormEvent) => {
@@ -48,6 +55,27 @@ export const DashboardPage: React.FC = () => {
       setNewProject({ title: '', abstract: '', keywords: '' });
     }
   };
+const handleDeleteProject = async (projectId: number) => {
+    // CRITICAL: Always ask for confirmation before a destructive action.
+    const isConfirmed = window.confirm(
+      'Are you sure you want to delete this entire project?\nAll associated files and access requests will be permanently removed. This cannot be undone.'
+    );
+
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${API_BASE_URL}/api/projects/${projectId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Update the UI instantly by removing the project from the local state
+      setProjects(currentProjects => currentProjects.filter(p => p.projectId !== projectId));
+    } catch (error) {
+      console.error('Failed to delete project:', error);
+      alert('Error: Could not delete the project.');
+    }
+  };
 
   const handleRequestResponse = async (requestId: number, status: 'approved' | 'denied') => {
     await updateRequestStatus(requestId, status);
@@ -78,6 +106,7 @@ export const DashboardPage: React.FC = () => {
       </div>
     );
   }
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -164,13 +193,20 @@ export const DashboardPage: React.FC = () => {
                           Files
                         </Button>
                       </Link>
+<Button 
+        onClick={() => handleDeleteProject(project.projectId)} 
+        variant="destructive" 
+        size="sm"
+      >
+        <Trash2 className="w-4 h-4" />
+      </Button>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
           )}
-_ECHO_NOT_A_COMMENT_       </div>
+    </div>
 
         {/* Access Requests Section - Now correctly uses 'requests' (which is 'receivedRequests') */}
         <div>

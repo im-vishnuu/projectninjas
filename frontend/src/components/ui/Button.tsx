@@ -2,7 +2,7 @@ import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline'|'destructive';
   size?: 'sm' | 'base' | 'lg';
   loading?: boolean;
 }
@@ -21,7 +21,8 @@ export const Button: React.FC<ButtonProps> = ({
   const variantClasses = {
     primary: 'bg-white text-black hover:bg-gray-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-white/10',
     secondary: 'bg-gray-800 text-white border border-gray-700 hover:bg-gray-700 hover:scale-[1.02] hover:shadow-lg hover:shadow-white/5',
-    outline: 'border border-white/20 text-white hover:bg-white/5 hover:border-white/40 hover:scale-[1.02]'
+    outline: 'border border-white/20 text-white hover:bg-white/5 hover:border-white/40 hover:scale-[1.02]',
+    destructive: 'bg-red-600 text-white hover:bg-red-700 hover:scale-[1.02] hover:shadow-lg hover:shadow-red-500/10',
   };
 
   const sizeClasses = {

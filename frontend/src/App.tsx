@@ -12,6 +12,7 @@ import { MyRequestsPage } from './pages/MyRequestsPage';
 import { MainLayout } from './components/layout/MainLayout';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ManageFilesPage } from './pages/ManageFilesPage';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
     </ProtectedRoute>
   }
 />
+<Route path="/projects/:projectId/files" element={<ManageFilesPage />} />
             <Route 
               path="/dashboard" 
               element={

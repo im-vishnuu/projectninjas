@@ -78,7 +78,7 @@ export const useProjects = () => {
     }
   }, [token]);
 
-  return { projects, loading, getProjectById, createProject, fetchProjectFiles, uploadProjectFile };
+  return { projects,setProjects, loading, getProjectById, createProject, fetchProjectFiles, uploadProjectFile };
 };
 
 // --- REFACTORED HOOK ---
